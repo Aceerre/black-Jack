@@ -19,6 +19,32 @@ let cCrup = document.getElementById("cartasCrupier");
 let cJug = document.getElementById("cartasJugador");
 let res = document.getElementById("resultado");
 
+///BOTONES
+
+let brepartir = document.getElementById("brepartir");
+let bpedir = document.getElementById("bpedircarta");
+let bplayagain = document.getElementById("bplayagain");
+let bplantarse = document.getElementById("bplantarse");
+
+brepartir.addEventListener("click", () => {
+  repartir();
+  console.log(cartasCrupier);
+});
+bpedir.addEventListener("click", () => {
+  pedirCarta();
+});
+bplayagain.addEventListener("click", () => {
+  playagain();
+});
+bplantarse.addEventListener("click", () => {
+  plantarse();
+});
+
+///visibilidad botones
+bpedircarta.style.display = "none";
+bplantarse.style.display = "none";
+bplayagain.style.display = "none";
+
 //crear baraja
 for (let i = 0; i < 4; i++) {
   //palos
@@ -47,6 +73,9 @@ function repartir() {
   let cCrupier1 = baraja[indiceCarta];
   cartasCrupier.push(cCrupier1);
   indiceCarta++;
+  let cCrupier2 = baraja[indiceCarta];
+  cartasCrupier.push(cCrupier2);
+  indiceCarta++;
 
   //calculamos puntos jugador por posible blackjack o +21
   for (let i in cartasJugador) {
@@ -54,18 +83,46 @@ function repartir() {
   }
   if (puntosJugador === 21) {
     resultado.innerHTML = `¡BlackJack! Has ganado`;
+    bpedir.style.display = "none";
+    bprepartir.style.display = "none";
+    bplantarse.style.display = "none";
+    bplayagain.style.display = "inline";
   }
-  if (puntosJugador > 21) {
-    resultado.innerHTML = `¡Has perdido! te has pasado`;
-  }
+
   //puntos crupier
   for (let i in cartasCrupier) {
     puntosCrupier += cartasCrupier[i].valor;
   }
+  if (puntosCrupier === 21) {
+    resultado.innerHTML = `¡BlackJack! Has perdido`;
+    bpedir.style.display = "none";
+    bprepartir.style.display = "none";
+    bplantarse.style.display = "none";
+    bplayagain.style.display = "inline";
+  }
   pCrup.innerHTML = "Puntuación crupier: " + puntosCrupier;
-  cCrup.innerHTML = JSON.stringify(cartasCrupier);
+  cCrup.innerHTML +=
+    cCrupier1.valor +
+    ` de ` +
+    cCrupier1.palo +
+    ` | ` +
+    cCrupier2.valor +
+    ` de ` +
+    cCrupier2.palo;
   pJug.innerHTML = "Puntuación jugador: " + puntosJugador;
-  cJug.innerHTML = JSON.stringify(cartasJugador);
+  cJug.innerHTML +=
+    cJugador.valor +
+    ` de ` +
+    cJugador.palo +
+    ` | ` +
+    cJugador2.valor +
+    ` de ` +
+    cJugador2.palo +
+    ` `;
+  bpedir.style.display = "";
+  brepartir.style.display = "none";
+  bplantarse.style.display = "";
+  comprobar();
 }
 ////////////////////////////////
 ////////////////////////////////PEDIRCARTA
@@ -74,45 +131,76 @@ function pedirCarta() {
   let cJugador = baraja[indiceCarta];
   cartasJugador.push(cJugador);
   indiceCarta++;
+  puntosJugador += cJugador.valor;
 
-  for (let i in cartasJugador) {
-    puntosJugador += cartasJugador[i].valor;
-  }
-  if (puntosJugador > 21) {
-    resultado.innerHTML = `¡Has perdido! te has pasado`;
-  }
+  cJug.innerHTML += ` | ` + cJugador.valor + ` de ` + cJugador.palo;
+  pCrup.innerHTML = "Puntuación crupier: " + puntosCrupier;
+  pJug.innerHTML = "Puntuación jugador: " + puntosJugador;
 
   if (puntosCrupier < 16) {
     let cCrupier1 = baraja[indiceCarta];
     cartasCrupier.push(cCrupier1);
     indiceCarta++;
-    for (let i in cartasCrupier) {
-      puntosCrupier += cartasCrupier[i].valor;
-    }
+    puntosCrupier += cCrupier1.valor;
+    cCrup.innerHTML += ` | ` + cCrupier1.valor + ` de ` + cCrupier1.palo;
+    pCrup.innerHTML = "Puntuación crupier: " + puntosCrupier;
   }
-  cJug.innerHTML = JSON.stringify(cartasJugador);
-  cCrup.innerHTML = JSON.stringify(cartasCrupier);
-  pCrup.innerHTML = "Puntuación crupier: " + puntosCrupier;
-  pJug.innerHTML = "Puntuación jugador: " + puntosJugador;
-  console.log(cartasCrupier);
-  console.log(cartasJugador);
+  comprobar();
 }
 /////
 ///////////////////////////
 ////
 
+function comprobar() {
+  if (puntosJugador > 21) {
+    resultado.innerHTML = `¡Has perdido! te has pasado`;
+
+    bplayagain.style.display = "inline";
+    brepartir.style.display = "none";
+    bpedir.style.display = "none";
+    bplantarse.style.display = "none";
+  }
+  if (puntosCrupier > 21) {
+    resultado.innerHTML = `¡Has ganado!el crupier se ha pasado`;
+
+    bplayagain.style.display = "inline";
+    brepartir.style.display = "none";
+    bpedir.style.display = "none";
+    bplantarse.style.display = "none";
+  }
+}
+
+function plantarse() {
+  if (puntosCrupier < 16) {
+    let cCrupier1 = baraja[indiceCarta];
+    cartasCrupier.push(cCrupier1);
+    indiceCarta++;
+    puntosCrupier += cCrupier1.valor;
+    cCrup.innerHTML += ` | ` + cCrupier1.valor + ` de ` + cCrupier1.palo;
+    pCrup.innerHTML = "Puntuación crupier: " + puntosCrupier;
+  }
+  comprobar();
+
+  if (puntosJugador > puntosCrupier) {
+    resultado.innerHTML = `¡Has ganado!`;
+    bplayagain.style.display = "inline";
+    bplantarse.style.display = "none";
+    bpedir.style.display = "none";
+  }
+  if (puntosJugador < puntosCrupier) {
+    resultado.innerHTML = `¡Has perdido!`;
+    bplayagain.style.display = "inline";
+    bplantarse.style.display = "none";
+    bpedir.style.display = "none";
+  }
+  if (puntosJugador === puntosCrupier) {
+    resultado.innerHTML = `¡Empate!`;
+    bplayagain.style.display = "inline";
+    bplantarse.style.display = "none";
+    bpedir.style.display = "none";
+  }
+}
+
 function playagain() {
   location.reload(true);
 }
-
-///FUNCION BOTONES
-document.getElementById("brepartir").addEventListener("click", () => {
-  repartir();
-  console.log(cartasCrupier);
-});
-document.getElementById("bpedircarta").addEventListener("click", () => {
-  pedirCarta();
-});
-document.getElementById("bplayagain").addEventListener("click", () => {
-  playagain();
-});
