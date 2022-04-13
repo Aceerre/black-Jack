@@ -2,12 +2,27 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+
+    <title>BlackJack FullStack</title>
   </head>
   <body>
-    <div id="app"></div>
+    <h1>BlackJack</h1>
+    <section>
+      <div id="cartasCrupier"></div>
+      <div id="puntosCrupier"></div>
+      <div id="puntosJugador"></div>
+      <div id="cartasJugador"></div>
+      <div id="resultado"></div>
+      <div id="botones">
+        <button id="brepartir">Repartir</button>
+        <button id="bpedircarta">Pedir carta</button>
+        <button id="bplantarse">Plantarse</button>
+        <button id="bplayagain">Volver a jugar</button>
+      </div>
+    </section>
     <script type="module" src="/main.js"></script>
   </body>
 </html>
